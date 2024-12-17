@@ -1,14 +1,12 @@
-// PrivateRoute.js
 import React from "react";
-import { Route, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext"; // Import useAuth hook
+import { Route, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PrivateRoute = ({ element, ...rest }) => {
   const { authData } = useAuth();
-  const navigate = useNavigate();
+
   if (!authData.isAuthenticated) {
-    navigate("/login", { replace: true });
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   return <Route {...rest} element={element} />;

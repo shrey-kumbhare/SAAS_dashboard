@@ -1,9 +1,8 @@
-// App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
-import PrivateRoute from "./PrivateRoute";
+import LoginPage from "./Pages/Login";
+import RegisterPage from "./Pages/Register";
+import PrivateRoute from "./Auth/PrivateRoute";
 
 const App = () => {
   return (
