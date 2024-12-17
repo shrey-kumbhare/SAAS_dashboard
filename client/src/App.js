@@ -1,14 +1,22 @@
+// App.js
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./HomePage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage";
+import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/"
+          element={<PrivateRoute element={<h2>Welcome to Dashboard</h2>} />}
+        />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 };
 
