@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 const Register = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -9,8 +9,6 @@ const Register = ({ onLogin }) => {
   });
 
   const [error, setError] = useState({ status: null, message: null });
-  const [successMessage, setSuccessMessage] = useState(null);
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({
@@ -19,35 +17,11 @@ const Register = ({ onLogin }) => {
     });
   };
 
-  const handleUserProductData = async () => {
-    try {
-      const response = await fetch("/api/v1/UserProduct", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ favouriteProductIDs: [], cartProductIDs: [] }),
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(
-          errorResponse.message || "Failed to update user product data"
-        );
-      }
-      navigate("/personalAccount");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
   const handleSignup = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post("/api/v1/register", formData);
-      setSuccessMessage(response.data.message);
       setFormData({
         name: "",
         email: "",
@@ -60,16 +34,13 @@ const Register = ({ onLogin }) => {
         response.data.options.expires,
         response.data.user
       );
-      handleUserProductData();
     } catch (error) {
-      console.log(error);
       setError({
         status: error.response?.status,
         message:
           error.response?.data?.error?.errors?.password?.message ||
           "User Already Exist",
       });
-      setSuccessMessage(null);
     }
   };
 
@@ -119,9 +90,6 @@ const Register = ({ onLogin }) => {
         <div className="message-container">
           {error.message && (
             <div className="error-message">{error.message}</div>
-          )}
-          {successMessage && (
-            <div className="success-message">{successMessage}</div>
           )}
         </div>
         <div className="signup-form-link">

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Login.css";
 const LoginForm = ({ onLogin, setCart, setFavourite }) => {
@@ -9,8 +9,6 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
   });
 
   const [error, setError] = useState({ status: null, message: null });
-  const [successMessage, setSuccessMessage] = useState(null);
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({
@@ -19,39 +17,12 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
     });
   };
 
-  const handleUserProductData = async () => {
-    try {
-      const response = await fetch("/api/v1/UserProduct", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(
-          errorResponse.message || "Failed to update user product data"
-        );
-      }
-
-      const data = await response.json();
-      setFavourite(data.favouriteProductIDs);
-      setCart(data.cartProductIDs);
-      navigate("/Account");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post("/api/v1/login", formData);
 
-      setSuccessMessage(response.data.success);
       setError({ status: null, message: null });
 
       onLogin(
@@ -59,13 +30,11 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
         response.data.options.expires,
         response.data.user
       );
-      handleUserProductData();
     } catch (error) {
       setError({
         status: error.response?.status,
         message: error.response?.data?.errMessage || "An error occurred",
       });
-      setSuccessMessage(null);
     }
   };
 
@@ -109,9 +78,6 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
         <div className="message-container">
           {error.message && (
             <div className="error-message">{error.message}</div>
-          )}
-          {successMessage && (
-            <div className="success-message">{successMessage}</div>
           )}
         </div>
         <div className="login-form-link">
