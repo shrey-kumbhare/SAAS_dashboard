@@ -10,7 +10,7 @@ process.on("uncaughtException", (err) => {
 
 connectDatabase();
 
-const server = app.listen(process.env.PORT, () => {
+const server = app.listen(port, () => {
   console.log(`Server started on PORT: ${port} in ${nodeEnv} mode.`);
 });
 

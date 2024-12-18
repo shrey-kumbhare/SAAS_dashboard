@@ -21,7 +21,10 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/v1/login", formData);
+      const response = await axios.post(
+        "http://localhost:5000/api/login",
+        formData
+      );
 
       setError({ status: null, message: null });
 

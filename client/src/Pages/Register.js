@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-const Register = ({ onLogin }) => {
+import { useAuth } from "../context/AuthContext";
+
+const Register = () => {
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-
-  const [error, setError] = useState({ status: null, message: null });
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -21,26 +24,30 @@ const Register = ({ onLogin }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/v1/register", formData);
+      const response = await axios.post(
+        "http://localhost:5000/api/register",
+        formData
+      );
+
+      const { user, token } = response.data;
+
+      login(user, token);
+
+      navigate("/");
+
       setFormData({
         name: "",
         email: "",
         password: "",
-        role: "user",
       });
-      setError({ status: null, message: null });
-      onLogin(
-        response.data.token,
-        response.data.options.expires,
-        response.data.user
+
+      setError(null);
+    } catch (err) {
+      console.log(err);
+      setError(
+        err.response?.data?.error?.message ||
+          "An error occurred. Please try again."
       );
-    } catch (error) {
-      setError({
-        status: error.response?.status,
-        message:
-          error.response?.data?.error?.errors?.password?.message ||
-          "User Already Exist",
-      });
     }
   };
 
@@ -81,17 +88,16 @@ const Register = ({ onLogin }) => {
               className="password"
               required
             />
-            <i className="bx bx-hide eye-icon"></i>
           </div>
           <div className="signup-form-button-field">
             <button type="submit">Signup</button>
           </div>
         </form>
-        <div className="message-container">
-          {error.message && (
-            <div className="error-message">{error.message}</div>
-          )}
-        </div>
+        {error && (
+          <div className="message-container">
+            <div className="error-message">{error}</div>
+          </div>
+        )}
         <div className="signup-form-link">
           <span>
             Already have an account?{" "}

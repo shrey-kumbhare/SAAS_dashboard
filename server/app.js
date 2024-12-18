@@ -10,7 +10,7 @@ app.use(cors({ origin: frontendURL, credentials: true }));
 app.use(express.json());
 
 // Routes
-app.use("/api/", user);
+app.use("/api", user);
 
 // Error Middleware
 app.use(errorMiddleware);
