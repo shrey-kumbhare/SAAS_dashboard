@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/Login.css";
 import { useAuth } from "../context/AuthContext";
+
 const LoginForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -10,7 +10,6 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-
   const [error, setError] = useState({ status: null, message: null });
 
   const handleInputChange = (e) => {
@@ -43,51 +42,61 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-form-container">
-      <div className="login-form-content">
-        <header>Login</header>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm text-center">
+        <header className="text-2xl font-bold mb-6">Login</header>
         <form onSubmit={handleLogin}>
-          <div className="login-form-field input-field">
+          <div className="mb-4">
             <input
               type="email"
               placeholder="Email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="input"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
-          <div className="login-form-field input-field">
+          <div className="mb-4 relative">
             <input
               type="password"
               placeholder="Password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className="password"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
-            <i className="bx bx-hide eye-icon"></i>
           </div>
-          <div className="login-form-link">
-            <a href="/forgotPassword" className="forgot-pass">
+          <div className="mb-4">
+            <Link
+              to="/forgotPassword"
+              className="text-sm text-blue-500 hover:underline"
+            >
               Forgot password?
-            </a>
+            </Link>
           </div>
-          <div className="login-form-button-field">
-            <button type="submit">Login</button>
+          <div className="mb-6">
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
+              Login
+            </button>
           </div>
         </form>
-        <div className="message-container">
-          {error.message && (
-            <div className="error-message">{error.message}</div>
-          )}
-        </div>
-        <div className="login-form-link">
+        {error.message && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error.message}
+          </div>
+        )}
+        <div>
           <span>
             Don't have an account?{" "}
-            <Link to="/register" className="link signup-link">
+            <Link
+              to="/register"
+              className="text-blue-500 font-semibold hover:underline"
+            >
               Signup
             </Link>
           </span>

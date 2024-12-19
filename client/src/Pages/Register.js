@@ -43,7 +43,6 @@ const Register = () => {
 
       setError(null);
     } catch (err) {
-      console.log(err);
       setError(
         err.response?.data?.error?.message ||
           "An error occurred. Please try again."
@@ -52,56 +51,64 @@ const Register = () => {
   };
 
   return (
-    <div className="signup-form-container">
-      <div className="signup-form-content">
-        <header>Signup</header>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm text-center">
+        <header className="text-2xl font-bold mb-6">Signup</header>
         <form onSubmit={handleSignup}>
-          <div className="signup-form-field input-field">
+          <div className="mb-4">
             <input
               type="text"
               placeholder="User Name"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="input"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
-          <div className="signup-form-field input-field">
+          <div className="mb-4">
             <input
               type="email"
               placeholder="Email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="input"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
-          <div className="signup-form-field input-field">
+          <div className="mb-4">
             <input
               type="password"
               placeholder="Password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className="password"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
           </div>
-          <div className="signup-form-button-field">
-            <button type="submit">Signup</button>
+          <div className="mb-6">
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
+              Signup
+            </button>
           </div>
         </form>
         {error && (
-          <div className="message-container">
-            <div className="error-message">{error}</div>
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
           </div>
         )}
-        <div className="signup-form-link">
+        <div>
           <span>
             Already have an account?{" "}
-            <Link to="/login" className="link login-link">
+            <Link
+              to="/login"
+              className="text-blue-500 font-semibold hover:underline"
+            >
               Login
             </Link>
           </span>
