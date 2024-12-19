@@ -4,7 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",

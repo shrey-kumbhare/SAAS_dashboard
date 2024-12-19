@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Login.css";
-const LoginForm = ({ onLogin, setCart, setFavourite }) => {
+import { useAuth } from "../context/AuthContext";
+const LoginForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,12 +30,10 @@ const LoginForm = ({ onLogin, setCart, setFavourite }) => {
       );
 
       setError({ status: null, message: null });
+      const { user, token } = response.data;
+      login(user, token);
 
-      onLogin(
-        response.data.token,
-        response.data.options.expires,
-        response.data.user
-      );
+      navigate("/");
     } catch (error) {
       setError({
         status: error.response?.status,
