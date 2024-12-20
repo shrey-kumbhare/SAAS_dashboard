@@ -6,14 +6,19 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 
 //checks if user authenticated or not
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.cookies;
+  const bearer = req.headers["authorization"];
+  const [, token] = bearer.split(" ");
+  if (!token) {
+    res.status(401);
+    res.json({ message: "Not authorized !" });
+    return;
+  }
+
   if (!token) {
     return next(
       new ErrorHandler("Please login first to access this resource", 401)
     );
   }
-  const decoded = jwt.verify(token, jwts);
-  req.user = await User.findById(decoded.id);
   next();
 });
 

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const Widgets = () => {
+  const { authData } = useAuth();
   const [metrics, setMetrics] = useState([
     { label: "Users", value: 0 },
     { label: "Revenue", value: "$0" },
@@ -11,7 +13,10 @@ const Widgets = () => {
     const fetchMetrics = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/totalUsers", {
-          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authData.isAuthenticated}`,
+          },
         });
         const data = await response.json();
         setMetrics((prevMetrics) =>
