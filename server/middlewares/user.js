@@ -19,6 +19,7 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Please login first to access this resource", 401)
     );
   }
+  req.user = await User.findById(token);
   next();
 });
 

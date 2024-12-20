@@ -15,7 +15,7 @@ const Widgets = () => {
         const response = await fetch("http://localhost:5000/api/totalUsers", {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authData.isAuthenticated}`,
+            Authorization: `Bearer ${authData.user._id}`,
           },
         });
         const data = await response.json();
