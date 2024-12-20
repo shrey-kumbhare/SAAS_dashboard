@@ -46,3 +46,19 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
     httpOnly: true,
   });
 });
+
+exports.getTotalUsers = catchAsyncErrors(async (req, res, next) => {
+  const userCount = await User.countDocuments();
+  res.status(200).json({
+    success: true,
+    totalUsers: userCount,
+  });
+});
+
+exports.getUserTime = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find().sort({ createdAt: 1 });
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
