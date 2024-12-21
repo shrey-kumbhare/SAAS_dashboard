@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [authData, setAuthData] = useState(() => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
@@ -24,10 +25,13 @@ export const AuthProvider = ({ children }) => {
     setAuthData({ isAuthenticated: false, user: null });
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("theme");
   };
 
   return (
-    <AuthContext.Provider value={{ authData, setAuthData, login, logout }}>
+    <AuthContext.Provider
+      value={{ authData, setAuthData, login, logout, theme, setTheme }}
+    >
       {children}
     </AuthContext.Provider>
   );
