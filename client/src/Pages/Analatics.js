@@ -5,13 +5,12 @@ import { useAuth } from "../context/AuthContext";
 import { CSVLink } from "react-csv";
 
 function Analytics() {
-  const { authData } = useAuth();
+  const { authData, theme } = useAuth(); // Get theme from context
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(10);
 
-  // Initialize sortConfig with default sorting direction for "name"
   const [sortConfig, setSortConfig] = useState({
     key: "name",
     direction: "ascending",
@@ -27,7 +26,7 @@ function Analytics() {
           },
         });
         const data = await response.json();
-        setUsers(data.User || []); // Changed to match response key
+        setUsers(data.User || []);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -35,7 +34,10 @@ function Analytics() {
     fetchData();
   }, [authData]);
 
-  // Sorting
+  useEffect(() => {
+    document.body.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
   const sortedUsers = useMemo(() => {
     if (sortConfig !== null) {
       return [...users].sort((a, b) => {
@@ -63,7 +65,6 @@ function Analytics() {
     setSortConfig({ key, direction });
   };
 
-  // Pagination
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentUsers = sortedUsers.slice(indexOfFirstRow, indexOfLastRow);
@@ -75,8 +76,12 @@ function Analytics() {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <div className="p-6 bg-gray-100 flex flex-col gap-6">
-          <div className="bg-white p-4 rounded shadow-md">
+        <div className="p-6 flex flex-col gap-6">
+          <div
+            className={`bg-white p-4 rounded shadow-md ${
+              theme === "dark" ? "bg-gray-800 text-white" : ""
+            }`}
+          >
             <h2 className="text-xl font-semibold mb-4">User Data Analytics</h2>
             <input
               type="text"
@@ -85,7 +90,11 @@ function Analytics() {
               value={search}
               onChange={(e) => setSearch(e.target.value.toLowerCase())}
             />
-            <table className="w-full table-auto border-collapse border border-gray-200">
+            <table
+              className={`w-full table-auto border-collapse border border-gray-200 ${
+                theme === "dark" ? "text-white" : ""
+              }`}
+            >
               <thead>
                 <tr>
                   <th

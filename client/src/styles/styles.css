@@ -1,0 +1,35 @@
+body {
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  color: #ffffff;
+  background-color: #000000;
+}
+
+input[type="checkbox"]:checked + label {
+  color: #1a73e8;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  /* Add responsive styles for mobile screens */
+  body {
+    font-size: 14px;
+  }
+
+  .toggle-checkbox {
+    width: 24px;
+    height: 24px;
+  }
+}

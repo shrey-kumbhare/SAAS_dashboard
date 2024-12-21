@@ -24,8 +24,8 @@ ChartJS.register(
   Legend
 );
 
-const Dashboard = () => {
-  const { authData } = useAuth();
+const Widgets = () => {
+  const { authData, theme } = useAuth();
 
   // States for Widgets
   const [metrics, setMetrics] = useState([
@@ -180,13 +180,20 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4 space-y-8">
+    <div
+      className={`p-4 space-y-8 ${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+      }`}
+    >
       {/* Metrics Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {metrics.map((metric, index) => (
           <div
             key={index}
-            className="p-4 bg-white rounded shadow-md hover:shadow-lg transition-shadow"
+            className="p-4 rounded shadow-md hover:shadow-lg transition-shadow"
+            style={{
+              backgroundColor: theme === "dark" ? "#2D3748" : "#ffffff",
+            }}
           >
             <h2 className="text-lg sm:text-xl font-semibold">{metric.label}</h2>
             <p className="text-xl sm:text-2xl font-bold">{metric.value}</p>
@@ -198,8 +205,9 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Revenue Chart */}
         <div
-          className="bg-white rounded shadow-md p-4"
+          className="rounded shadow-md p-4"
           style={{
+            backgroundColor: theme === "dark" ? "#2D3748" : "#ffffff",
             height: "100%",
           }}
         >
@@ -212,7 +220,12 @@ const Dashboard = () => {
         </div>
 
         {/* User Growth Chart */}
-        <div className="w-full max-w-4xl mx-auto p-4 bg-white rounded shadow-md">
+        <div
+          className="w-full max-w-4xl mx-auto p-4 rounded shadow-md"
+          style={{
+            backgroundColor: theme === "dark" ? "#2D3748" : "#ffffff",
+          }}
+        >
           <h2 className="text-xl font-semibold mb-4 text-center">
             User Growth
           </h2>
@@ -225,4 +238,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Widgets;
