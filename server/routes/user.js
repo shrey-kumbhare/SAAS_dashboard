@@ -7,6 +7,7 @@ const {
   logoutUser,
   getTotalUsers,
   getUserTime,
+  getUser,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizedRoles } = require("../middlewares/user");
 
@@ -15,4 +16,5 @@ router.route("/login").post(loginUser);
 router.route("/logout").get(logoutUser);
 router.route("/totalUsers").get(isAuthenticatedUser, getTotalUsers);
 router.route("/UserTime").get(isAuthenticatedUser, getUserTime);
+router.route("/User").get(isAuthenticatedUser, getUser);
 module.exports = router;

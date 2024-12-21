@@ -17,13 +17,13 @@ const Sidebar = () => {
       </button>
       {isOpen && (
         <nav className="flex flex-col gap-4 mt-4 px-4">
-          <a href="#overview" className="hover:bg-blue-700 p-2 rounded">
+          <a href="/" className="hover:bg-blue-700 p-2 rounded">
             Overview
           </a>
-          <a href="#analytics" className="hover:bg-blue-700 p-2 rounded">
+          <a href="/analytics" className="hover:bg-blue-700 p-2 rounded">
             Analytics
           </a>
-          <a href="#settings" className="hover:bg-blue-700 p-2 rounded">
+          <a href="/settings" className="hover:bg-blue-700 p-2 rounded">
             Settings
           </a>
         </nav>
