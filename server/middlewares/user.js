@@ -19,8 +19,12 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler("Please login first to access this resource", 401)
     );
   }
-  req.user = await User.findById(token);
-  next();
+  try {
+    req.user = token;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
 });
 
 //Handling user roles

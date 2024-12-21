@@ -8,6 +8,7 @@ const {
   getTotalUsers,
   getUserTime,
   getUser,
+  verifyPass,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizedRoles } = require("../middlewares/user");
 
@@ -17,4 +18,5 @@ router.route("/logout").get(logoutUser);
 router.route("/totalUsers").get(isAuthenticatedUser, getTotalUsers);
 router.route("/UserTime").get(isAuthenticatedUser, getUserTime);
 router.route("/User").get(isAuthenticatedUser, getUser);
+router.route("/verifyPass").get(isAuthenticatedUser, verifyPass);
 module.exports = router;

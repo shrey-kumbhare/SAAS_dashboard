@@ -75,3 +75,29 @@ exports.getUser = catchAsyncErrors(async (req, res, next) => {
     User: users,
   });
 });
+
+exports.verifyPass = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user;
+
+  try {
+    const { password } = req.query;
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+    const user = await User.findById(userId).select("+password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
+    if (isPasswordValid) {
+      return res.status(200).json({ message: "Password is valid" });
+    } else {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
