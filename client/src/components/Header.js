@@ -10,16 +10,14 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const { logout, authData } = useAuth();
-  const userName = authData.user.name;
+  const userName = authData?.user?.name || "Guest";
   const userImage = "https://via.placeholder.com/40";
 
   return (
     <header className="w-full px-6 py-4 bg-white shadow-md">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center">
-        {/* Dashboard Title (Align Left) */}
         <h1 className="text-2xl font-bold">Dashboard</h1>
 
-        {/* Navigation Links and Profile (Align Right) */}
         <div className="flex items-center gap-6 ml-6">
           <nav className="hidden lg:flex gap-6 items-center">
             <Link
@@ -45,7 +43,6 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Profile and Logout Button (Always Visible) */}
           <div className="flex items-center gap-4">
             <img
               src={userImage}
