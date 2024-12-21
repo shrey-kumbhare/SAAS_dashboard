@@ -14,5 +14,5 @@ router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/logout").get(logoutUser);
 router.route("/totalUsers").get(isAuthenticatedUser, getTotalUsers);
-router.route("/UserTime").get(getUserTime);
+router.route("/UserTime").get(isAuthenticatedUser, getUserTime);
 module.exports = router;

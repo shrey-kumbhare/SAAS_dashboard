@@ -56,9 +56,13 @@ exports.getTotalUsers = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getUserTime = catchAsyncErrors(async (req, res, next) => {
-  const users = await User.find().sort({ createdAt: 1 });
+  const users = await User.find({}, { createdAt: 1, _id: 0 }).sort({
+    createdAt: 1,
+  });
+  const createdAtTimes = users.map((user) => user.createdAt);
+
   res.status(200).json({
     success: true,
-    users,
+    createdAt: createdAtTimes,
   });
 });
