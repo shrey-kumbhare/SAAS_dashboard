@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/mail");
+const sendSms = require("../utils/sms");
 const { jwts } = require("../config");
 
 const userSchema = new mongoose.Schema({
@@ -52,8 +53,13 @@ userSchema.pre("save", async function (next) {
 
   // Send notification on user creation
   if (this.notifications.email) {
-    const message = `Welcome ${this.name}! Your account has been successfully created in the SAAS Dshboard.`;
-    await sendEmail(this.email, "Account Created", message);
+    const emailMessage = `Welcome ${this.name}! Your account has been successfully created in the SAAS Dashboard.`;
+    await sendEmail(this.email, "Account Created", emailMessage);
+  }
+
+  if (this.notifications.sms && this.phone) {
+    const smsMessage = `Welcome ${this.name}! Your SAAS Dashboard account has been successfully created.`;
+    await sendSms(this.phone, smsMessage);
   }
 
   next();
@@ -61,9 +67,14 @@ userSchema.pre("save", async function (next) {
 
 // Middleware to handle updates
 userSchema.post("findOneAndUpdate", async function (doc) {
-  if (doc.notifications.email) {
-    const message = `Hi ${doc.name}, your account information has been updated.`;
-    await sendEmail(doc.email, "Account Updated", message);
+  if (doc.notifications.email && doc.notifications.email) {
+    const emailMessage = `Hi ${doc.name}, your account information has been updated.`;
+    await sendEmail(doc.email, "Account Updated", emailMessage);
+  }
+
+  if (doc.notifications.sms && doc.phone) {
+    const smsMessage = `Hi ${doc.name}, your account information has been updated.`;
+    await sendSms(doc.phone, smsMessage);
   }
 });
 
