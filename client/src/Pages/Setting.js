@@ -16,7 +16,7 @@ function Setting() {
   });
 
   const [notifications, setNotifications] = useState({
-    email: true,
+    email: false,
     sms: false,
   });
 
@@ -152,6 +152,7 @@ function Setting() {
                     setUserProfile({ ...userProfile, phone: e.target.value })
                   }
                   required
+                  placeholder="Enter your phone number with country code and should be verified by twilo.com"
                 />
               </div>
               <div className="mb-4">
