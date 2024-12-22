@@ -16,7 +16,7 @@ function Setting() {
   });
 
   const [notifications, setNotifications] = useState({
-    email: false,
+    email: true,
     sms: false,
   });
 
