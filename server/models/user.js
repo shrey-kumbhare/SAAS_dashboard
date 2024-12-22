@@ -1,54 +1,60 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { jwts } = require("../config");
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please enter your name"],
-    maxLength: [30, "Your name cannot exceed 30 characters"],
+    required: true,
   },
   email: {
     type: String,
-    required: [true, "Please enter your email"],
+    required: true,
     unique: true,
-    validate: [validator.isEmail, "Please enter valid email address"],
   },
   password: {
     type: String,
-    required: [true, "Please enter your password"],
-    minlength: [0, "Your password must be longer than 0 characters"],
-    select: false,
+    required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  phone: {
+    type: String,
   },
-  resetPasswordToken: String,
-  resetPasswordExpired: Date,
+  notifications: {
+    email: {
+      type: Boolean,
+      default: false,
+    },
+    sms: {
+      type: Boolean,
+      default: false,
+    },
+  },
 });
 
-//password encryption
+// Password encryption before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
 
   this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-//Compare user password
+// Password encryption before updating
+userSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+
+  // If the password field is being updated, hash it
+  if (update.password) {
+    update.password = await bcrypt.hash(update.password, 10);
+  }
+
+  next();
+});
+
+// Compare user password
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
-};
-
-//return JWT token
-userSchema.methods.getJwtToken = function () {
-  const token = jwt.sign({ id: this._id }, jwts, {
-    expiresIn: "36000s",
-  });
-  return token;
 };
 
 module.exports = mongoose.model("User", userSchema);

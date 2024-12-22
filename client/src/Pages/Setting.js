@@ -3,12 +3,14 @@ import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
+
 function Setting() {
   const { theme, setTheme, authData } = useAuth();
   const [passVerify, setPassVerify] = useState(false);
   const [userProfile, setUserProfile] = useState({
     name: "",
     email: "",
+    Number: "",
     verifyPassword: "",
     password: "",
   });
@@ -36,16 +38,34 @@ function Setting() {
           },
         }
       );
-      response.status == 200 ? setPassVerify(true) : setPassVerify(false);
+      setPassVerify(response.status === 200);
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      setPassVerify(false);
     }
   };
 
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    // You might want to add a function to handle profile update logic here
-    console.log("Updating profile:", userProfile);
+    if (passVerify) {
+      try {
+        const response = await axios.patch(
+          `http://localhost:5000/api/updateUser`,
+          { userProfile, notifications },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authData.user._id}`,
+            },
+          }
+        );
+        console.log(response);
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      alert("Verify your Current Password");
+    }
   };
 
   const handleNotificationChange = (e) => {
@@ -54,7 +74,6 @@ function Setting() {
   };
 
   useEffect(() => {
-    // Apply the theme when the component mounts
     document.body.classList.toggle("dark", theme === "dark");
   }, [theme]);
 
@@ -64,7 +83,6 @@ function Setting() {
       <div className="flex-1 flex flex-col">
         <Header />
         <div className="p-6 flex flex-col gap-6 bg-gray-100 dark:bg-gray-900">
-          {/* User Profile Update Form */}
           <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">
               Update Profile
@@ -81,7 +99,6 @@ function Setting() {
                   onChange={(e) =>
                     setUserProfile({ ...userProfile, name: e.target.value })
                   }
-                  required
                 />
               </div>
               <div className="mb-4">
@@ -95,7 +112,6 @@ function Setting() {
                   onChange={(e) =>
                     setUserProfile({ ...userProfile, email: e.target.value })
                   }
-                  required
                 />
               </div>
               <div className="mb-4">
@@ -117,14 +133,26 @@ function Setting() {
                 <button
                   type="button"
                   className={`mt-6 p-2 text-white rounded-lg ml-[10%] ${
-                    passVerify
-                      ? "bg-green-500"
-                      : "bg-blue-500 dark:bg-blue-700 dark:text-gray-900"
+                    passVerify ? "bg-green-500" : "bg-blue-500 dark:bg-blue-700"
                   }`}
                   onClick={verifyPassword}
                 >
                   Verify
                 </button>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Number
+                </label>
+                <input
+                  type="number"
+                  className="mt-1 p-2 w-full border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                  value={userProfile.Number}
+                  onChange={(e) =>
+                    setUserProfile({ ...userProfile, Number: e.target.value })
+                  }
+                  required
+                />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -137,7 +165,6 @@ function Setting() {
                   onChange={(e) =>
                     setUserProfile({ ...userProfile, password: e.target.value })
                   }
-                  required
                 />
               </div>
               <button
@@ -148,8 +175,6 @@ function Setting() {
               </button>
             </form>
           </div>
-
-          {/* Theme Toggle */}
           <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md mt-6">
             <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">
               Change Theme
@@ -180,8 +205,6 @@ function Setting() {
               <label className="text-sm text-black dark:text-white">Dark</label>
             </div>
           </div>
-
-          {/* Notification Settings */}
           <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md mt-6">
             <h2 className="text-xl font-semibold mb-4 text-black dark:text-white">
               Notification Preferences

@@ -9,6 +9,7 @@ const {
   getUserTime,
   getUser,
   verifyPass,
+  updateUser,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizedRoles } = require("../middlewares/user");
 
@@ -19,4 +20,6 @@ router.route("/totalUsers").get(isAuthenticatedUser, getTotalUsers);
 router.route("/UserTime").get(isAuthenticatedUser, getUserTime);
 router.route("/User").get(isAuthenticatedUser, getUser);
 router.route("/verifyPass").get(isAuthenticatedUser, verifyPass);
+router.route("/updateUser").patch(isAuthenticatedUser, updateUser);
+
 module.exports = router;
