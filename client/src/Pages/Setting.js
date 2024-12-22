@@ -10,7 +10,7 @@ function Setting() {
   const [userProfile, setUserProfile] = useState({
     name: "",
     email: "",
-    Number: "",
+    phone: "",
     verifyPassword: "",
     password: "",
   });
@@ -142,14 +142,14 @@ function Setting() {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Number
+                  Phone Number
                 </label>
                 <input
                   type="number"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-                  value={userProfile.Number}
+                  value={userProfile.phone}
                   onChange={(e) =>
-                    setUserProfile({ ...userProfile, Number: e.target.value })
+                    setUserProfile({ ...userProfile, phone: e.target.value })
                   }
                   required
                 />

@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { jwts } = require("../config");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -10,10 +13,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    validate: [validator.isEmail],
   },
   password: {
     type: String,
     required: true,
+    select: false,
   },
   phone: {
     type: String,
@@ -28,6 +33,12 @@ const userSchema = new mongoose.Schema({
       default: false,
     },
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  resetPasswordToken: String,
+  resetPasswordExpired: Date,
 });
 
 // Password encryption before saving
@@ -40,21 +51,16 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Password encryption before updating
-userSchema.pre("findOneAndUpdate", async function (next) {
-  const update = this.getUpdate();
-
-  // If the password field is being updated, hash it
-  if (update.password) {
-    update.password = await bcrypt.hash(update.password, 10);
-  }
-
-  next();
-});
-
 // Compare user password
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Return JWT token
+userSchema.methods.getJwtToken = function () {
+  return jwt.sign({ id: this._id }, jwts, {
+    expiresIn: "36000s",
+  });
 };
 
 module.exports = mongoose.model("User", userSchema);

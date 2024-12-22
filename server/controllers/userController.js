@@ -3,6 +3,7 @@ const User = require("../models/user");
 const ErrorHandler = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
+const bcrypt = require("bcryptjs");
 
 //Register user=>/api/v1/register
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -103,35 +104,40 @@ exports.verifyPass = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.updateUser = catchAsyncErrors(async (req, res, next) => {
-  try {
-    const { userProfile, notifications } = req.body;
-    const userId = req.user;
+  const { userProfile, notifications } = req.body;
+  const userId = req.user;
 
-    if (!userProfile || !notifications) {
-      return res.status(400).json({ error: "Incomplete data provided" });
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        $set: {
-          name: userProfile.name,
-          email: userProfile.email,
-          password: userProfile.password,
-        },
-      },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", updatedUser });
-  } catch (error) {
-    console.error("Error updating user profile:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+  if (!userProfile && !notifications) {
+    return res.status(400).json({ error: "No data provided for update" });
   }
+
+  const updateFields = {};
+  if (userProfile) {
+    if (userProfile.name) updateFields.name = userProfile.name;
+    if (userProfile.email) updateFields.email = userProfile.email;
+    if (userProfile.password) {
+      updateFields.password = await bcrypt.hash(userProfile.password, 10);
+    }
+    if (userProfile.phone) {
+      updateFields.phone = userProfile.phone;
+    }
+  }
+
+  if (notifications) {
+    updateFields.notifications = notifications;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: updateFields },
+    { new: true, runValidators: true, context: "query" }
+  );
+
+  if (!updatedUser) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res
+    .status(200)
+    .json({ message: "Profile updated successfully", updatedUser });
 });
