@@ -7,6 +7,8 @@ const config = {
   frontendURL: process.env.BASE_URL,
   cookieTime: process.env.COOKIE_EXPIRES_TIME,
   jwts: process.env.JWT_SECRET,
+  ownerMail: process.env.MAIL,
+  passw: process.env.MAIL_PASSWORD,
 };
 
 module.exports = config;

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/mail");
 const { jwts } = require("../config");
 
 const userSchema = new mongoose.Schema({
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema({
   notifications: {
     email: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     sms: {
       type: Boolean,
@@ -48,7 +49,22 @@ userSchema.pre("save", async function (next) {
   }
 
   this.password = await bcrypt.hash(this.password, 10);
+
+  // Send notification on user creation
+  if (this.notifications.email) {
+    const message = `Welcome ${this.name}! Your account has been successfully created in the SAAS Dshboard.`;
+    await sendEmail(this.email, "Account Created", message);
+  }
+
   next();
+});
+
+// Middleware to handle updates
+userSchema.post("findOneAndUpdate", async function (doc) {
+  if (doc.notifications.email) {
+    const message = `Hi ${doc.name}, your account information has been updated.`;
+    await sendEmail(doc.email, "Account Updated", message);
+  }
 });
 
 // Compare user password
